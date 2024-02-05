@@ -1,49 +1,21 @@
 from flask import Flask, request
-import tensorflow as tf
-import os
-from tensorflow.python.tools import saved_model_cli
+from tensorflow.python.tools.saved_model_cli import load_inputs_from_input_arg_string
+import json
 
 app = Flask(__name__)
 
-@app.route('/load_model', methods=['POST'])
-def load_model():
-    # Simulating receiving a model directory path from an untrusted source
-    model_dir = request.form['model_dir']
-
-    # Potential taint vulnerability if model_dir is not validated
-    # and directly used to load a TensorFlow SavedModel
-    model = tf.saved_model_cli.load(model_dir)  # Hypothetical risky operation
-
-    return "Model loaded successfully!"
-
-@app.route('/inspect_model', methods=['GET'])
-def inspect_model():
-    # Simulating receiving a model directory path as a query parameter from an untrusted source
-    model_dir = request.args.get('model_dir')
-
-    # Directly passing untrusted input to saved_model_cli.inspect to inspect the model
-    # This could lead to information disclosure if model_dir is manipulated
-    info = saved_model_cli.show_all(model_dir)  # Hypothetical risky operation
-
-    return info
-
-@app.route('/execute_model_function', methods=['POST'])
-def execute_model_function():
-    # Simulating receiving model execution parameters from untrusted sources
-    model_dir = request.form['model_dir']
-    tag_set = request.form['tag_set']
-    signature_def_key = request.form['signature_def_key']
-    inputs = request.form['inputs']  # Assume this is a simplified representation
-
-    # This operation could be vulnerable if inputs are crafted to exploit the model execution
-    output = saved_model_cli.run_saved_model_with_feed_dict(
-        model_dir,
-        tag_set,
-        signature_def_key,
-        inputs  # Hypothetical risky operation
-    )
-
-    return f"Model executed, output: {output}"
-
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.route('/execute_model_with_inputs', methods=['POST'])
+def execute_model_with_inputs():
+    # Simulating receiving a string representing model inputs from an untrusted source
+    input_arg_string = request.form['input_arg_string']
+    
+    # The focus here is on how load_inputs_from_input_arg_string handles the untrusted input string
+    # This is a critical point for taint analysis to ensure no malicious data manipulation occurs
+    try:
+        inputs = load_inputs_from_input_arg_string(input_arg_string)
+    except Exception as e:
+        return f"Error processing input string: {str(e)}", 400
+    
+    # For demonstration purposes, we're just returning the parsed inputs
+    # In a real scenario, these would be fed into a TensorFlow model for execution
+    return json.dumps(inputs, indent=4), 200
