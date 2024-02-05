@@ -822,3 +822,13 @@ Defined Functions:
 
 if __name__ == '__main__':
   test.main()
+
+
+from flask import Flask, request
+app = Flask(__name__)
+import builtins
+@app.route("/files/<expression>")
+def test_trigger(expression):
+  saved_model_cli(expression)
+
+  
