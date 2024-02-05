@@ -12,7 +12,7 @@ def load_model():
 
     # Potential taint vulnerability if model_dir is not validated
     # and directly used to load a TensorFlow SavedModel
-    model = tf.saved_model.load(model_dir)  # Hypothetical risky operation
+    model = tf.saved_model_cli.load(model_dir)  # Hypothetical risky operation
 
     return "Model loaded successfully!"
 
