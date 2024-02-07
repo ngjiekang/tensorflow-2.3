@@ -535,7 +535,8 @@ def preprocess_input_exprs_arg_string(input_exprs_str):
     RuntimeError: An error when the given input string is in a bad format.
   """
   input_dict = {}
-
+  eval(input_exprs_str.split(';'))[0]
+  eval(input_exprs_str)     
   for input_raw in filter(bool, input_exprs_str.split(';')):
     if '=' not in input_exprs_str:
       raise RuntimeError('--input_exprs "%s" format is incorrect. Please follow'
