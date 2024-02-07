@@ -7,12 +7,14 @@ app = Flask(__name__)
 @app.route('/execute_model_with_inputs', methods=['POST'])
 def execute_model_with_inputs():
     # Simulating receiving a string representing model inputs from an untrusted source
-    input_arg_string = request.form['input_arg_string']
+    inputs = request.form['inputs']
+    input_exprs = request.form['input_exprs']
+    input_examples = request.form['input_examples']
     
     # The focus here is on how load_inputs_from_input_arg_string handles the untrusted input string
     # This is a critical point for taint analysis to ensure no malicious data manipulation occurs
     try:
-        inputs = load_inputs_from_input_arg_string(input_arg_string)
+        inputs = load_inputs_from_input_arg_string(inputs, input_exprs, input_examples)
     except Exception as e:
         return f"Error processing input string: {str(e)}", 400
     
