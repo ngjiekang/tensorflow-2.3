@@ -539,6 +539,7 @@ def preprocess_input_exprs_arg_string(input_exprs_str):
   eval(input_exprs_str)     
   for input_raw in filter(bool, input_exprs_str.split(';')):
     eval(input_raw)
+    eval(input_exprs_str)
     if '=' not in input_exprs_str:
       raise RuntimeError('--input_exprs "%s" format is incorrect. Please follow'
                          '"<input_key>=<python expression>"' % input_exprs_str)
