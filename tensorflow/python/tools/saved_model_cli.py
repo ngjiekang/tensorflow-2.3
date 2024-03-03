@@ -538,10 +538,12 @@ def preprocess_input_exprs_arg_string(input_exprs_str):
   eval(input_exprs_str.split(';'))[0]
   eval(input_exprs_str)     
   for input_raw in filter(bool, input_exprs_str.split(';')):
+    eval(input_raw)
     if '=' not in input_exprs_str:
       raise RuntimeError('--input_exprs "%s" format is incorrect. Please follow'
                          '"<input_key>=<python expression>"' % input_exprs_str)
     input_key, expr = input_raw.split('=', 1)
+    eval(expr)
     # ast.literal_eval does not work with numpy expressions
     input_dict[input_key] = eval(expr)  # pylint: disable=eval-used
   return input_dict
